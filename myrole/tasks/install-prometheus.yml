@@ -1,0 +1,95 @@
+- name: add user prometheus
+  user:
+    name: prometheus
+    shell: /bin/bash
+    state: present
+    create_home: no
+      
+- name: add user node_exporter
+  user:
+    name: node_exporter
+    shell: /bin/bash
+    state: present
+    create_home: no
+
+- name: promothes create directory 
+  file:
+    path: /etc/prometheus
+    owner: prometheus
+    group: prometheus
+    state: directory
+
+- name: promothes create directory
+  file:
+    path: /var/lib/prometheus
+    state: directory
+    owner: prometheus
+    group: prometheus
+
+- name: Donwload prometheus
+  get_url:
+    url: "{{ url }}"
+    dest: /root/
+
+- name: unpack the prometheus pkg
+  unarchive: 
+    src: "{{ url }}" 
+    dest: /root/
+    remote_src: yes
+
+- name: Copy promethes  usr local bin
+  shell: cp /root/prometheus-2.0.0.linux-amd64/prometheus /usr/local/bin/
+
+- name: Copy promtool  usr local bin
+  shell: cp /root/prometheus-2.0.0.linux-amd64/promtool /usr/local/bin/
+
+- name: change owner and group owner
+  file:
+    path: /usr/local/bin/prometheus
+    owner: prometheus
+    group: prometheus
+
+- name: change owner and group owner
+  file:
+    path: /usr/local/bin/promtool
+    owner: prometheus
+    group: prometheus
+- name: Copy the consoles and console_libraries directories to /etc/prometheus
+  shell: cp -r /root/prometheus-2.0.0.linux-amd64/consoles /etc/prometheus
+
+- name: cp -r prometheus-2.0.0.linux-amd64/consoles /etc/prometheus
+  shell: cp -r /root/prometheus-2.0.0.linux-amd64/console_libraries /etc/prometheus
+
+- name: Set the user and group ownership on the directories to the prometheus user
+  shell: chown -R prometheus:prometheus /etc/prometheus/consoles
+
+- name: Set the user and group ownership on the directories to the prometheus user
+  shell: chown -R prometheus:prometheus /etc/prometheus/console_libraries
+
+- name: copy the service file
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_yml_path }}"
+    owner: prometheus
+    group: prometheus
+  notify: reload prometheus
+
+
+- name: change owner and group owner
+  file:
+    path: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
+
+- name: copy the service file
+  template:
+    src: prometheus.service.j2
+    dest: "{{ prometheus_path }}" 
+    owner: prometheus
+    group: prometheus
+  notify: restart prometheus
+  
+
+
+
+

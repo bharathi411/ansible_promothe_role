@@ -1,0 +1,25 @@
+#installation of node-exporter
+- name: Donwload nodeexporter
+  get_url:
+    url: "{{ nodeexporter }}"
+    dest: /root/
+
+- name: unpack the prometheus pkg
+  unarchive:
+    src: "{{ nodeexporter }}"
+    dest: /root/
+    remote_src: yes
+
+- name: Copy node_exporter  usr local bin
+  shell: cp node_exporter-0.15.1.linux-amd64/node_exporter /usr/local/bin
+- name: Change owner ship to  node_exporter
+  shell: chown node_exporter:node_exporter /usr/local/bin/node_exporter
+
+- name: copy the service file
+  template:
+    src: node_exporter.service.j2
+    dest: "{{ node_exporter_path  }}"
+  
+  notify: reload node_exporter
+          
+

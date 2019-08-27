@@ -1,0 +1,43 @@
+---
+- name: Update repositories cache and install package
+  apt:
+    name: software-properties-common
+    update_cache: yes
+    state: latest
+
+- name: install the repository for stable releases
+  apt_repository: 
+    repo: "deb https://packages.grafana.com/oss/deb stable main" 
+    state: present 
+    update_cache: yes
+
+- name: There is a separate repository if you want beta releases
+  apt_repository: 
+    repo: "deb https://packages.grafana.com/oss/deb beta main" 
+    state: present  
+    update_cache: yes
+
+- name: Then add our gpg key
+  shell: wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+
+- name: Update repositories cache and install "grafana" package
+  apt:
+    name: grafana
+    update_cache: yes
+    state: latest
+
+- name: Update repositories cache and install "apt-transport-https" package
+  apt:
+    name: apt-transport-https
+    state: latest
+
+- name: update packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+  notify: start grafana-server
+
+
+
+
+

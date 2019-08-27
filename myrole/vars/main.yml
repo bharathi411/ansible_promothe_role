@@ -1,5 +1,6 @@
----
-java_version_redhat: java-1.8.0
-java_version: oracle-java8-installer
-
-
+#promothes downlaod url
+url: https://github.com/prometheus/prometheus/releases/download/v2.0.0/prometheus-2.0.0.linux-amd64.tar.gz
+prometheus_path: /etc/systemd/system/prometheus.service
+nodeexporter: https://github.com/prometheus/node_exporter/releases/download/v0.15.1/node_exporter-0.15.1.linux-amd64.tar.gz
+node_exporter_path: /etc/systemd/system/node_exporter.service
+prometheus_yml_path: /etc/prometheus/prometheus.yml
